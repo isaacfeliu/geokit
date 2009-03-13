@@ -332,11 +332,20 @@ module GeoKit
       # The failover approach is crucial for production-grade apps, but is rarely used.
       # 98% of your geocoding calls will be successful with the first call  
       def self.do_geocode(address)
+        res = CACHE.get(address.slugize)
+        unless res.nil?
+          RAILS_DEFAULT_LOGGER.info "==> Got #{address.slugize} from cache"
+          return res 
+        end
         GeoKit::Geocoders::provider_order.each do |provider|
           begin
             klass = GeoKit::Geocoders.const_get "#{provider.to_s.capitalize}Geocoder"
             res = klass.send :geocode, address
-            return res if res.success
+            if res.success
+              CACHE.set(address.slugize, res)
+              RAILS_DEFAULT_LOGGER.info "<== Set #{address.slugize} from cache"
+              return res
+            end
           rescue
             logger.error("Something has gone very wrong during geocoding, OR you have configured an invalid class name in GeoKit::Geocoders::provider_order. Address: #{address}. Provider: #{provider}")
           end
