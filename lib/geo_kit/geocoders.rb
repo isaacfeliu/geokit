@@ -170,7 +170,8 @@ module GeoKit
 
           #extended -- false if not not available
           res.city = doc.elements['//LocalityName'].text if doc.elements['//LocalityName']
-          res.state = doc.elements['//AdministrativeAreaName'].text if doc.elements['//AdministrativeAreaName']
+          res.state = doc.elements['//SubAdministrativeAreaName'].text if doc.elements['//SubAdministrativeAreaName']
+          res.region = doc.elements['//AdministrativeAreaName'].text if doc.elements['//AdministrativeAreaName']
           res.full_address = doc.elements['//address'].text if doc.elements['//address'] # google provides it
           res.zip = doc.elements['//PostalCodeNumber'].text if doc.elements['//PostalCodeNumber']
           res.street_address = doc.elements['//ThoroughfareName'].text if doc.elements['//ThoroughfareName']
@@ -179,7 +180,7 @@ module GeoKit
           # old way -- address_details=doc.elements['//AddressDetails','urn:oasis:names:tc:ciq:xsdschema:xAL:2.0']
           address_details=doc.elements['//*[local-name() = "AddressDetails"]']
           accuracy = address_details ? address_details.attributes['Accuracy'].to_i : 0
-          res.precision=%w{unknown country state state city zip zip+4 street address}[accuracy]
+          res.precision=%w{unknown country region state city zip zip+4 street address}[accuracy]
           res.success=true
           
           return res

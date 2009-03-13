@@ -271,7 +271,7 @@ module GeoKit
   class GeoLoc < LatLng
     # Location attributes.  Full address is a concatenation of all values.  For example:
     # 100 Spear St, San Francisco, CA, 94101, US
-    attr_accessor :street_address, :city, :state, :zip, :country_code, :full_address
+    attr_accessor :street_address, :city, :state, :region, :zip, :country_code, :full_address
     # Attributes set upon return from geocoding.  Success will be true for successful
     # geocode lookups.  The provider will be set to the name of the providing geocoder.
     # Finally, precision is an indicator of the accuracy of the geocoding.
@@ -284,6 +284,7 @@ module GeoKit
       @street_address=h[:street_address] 
       @city=h[:city] 
       @state=h[:state] 
+      @region=h[:region] 
       @zip=h[:zip] 
       @country_code=h[:country_code] 
       @success=false
@@ -317,7 +318,7 @@ module GeoKit
     # gives you all the important fields as key-value pairs
     def hash
       res={}
-      [:success,:lat,:lng,:country_code,:city,:state,:zip,:street_address,:provider,:full_address,:is_us?,:ll,:precision].each { |s| res[s] = self.send(s.to_s) }
+      [:success,:lat,:lng,:country_code,:city,:state,:region,:zip,:street_address,:provider,:full_address,:is_us?,:ll,:precision].each { |s| res[s] = self.send(s.to_s) }
       res
     end
     alias to_hash hash
@@ -342,7 +343,7 @@ module GeoKit
 
     # Returns a string representation of the instance.
     def to_s
-      "Provider: #{provider}\n Street: #{street_address}\nCity: #{city}\nState: #{state}\nZip: #{zip}\nLatitude: #{lat}\nLongitude: #{lng}\nCountry: #{country_code}\nSuccess: #{success}"
+      "Provider: #{provider}\n Street: #{street_address}\nCity: #{city}\nState: #{state}\nRegion: #{region}\nZip: #{zip}\nLatitude: #{lat}\nLongitude: #{lng}\nCountry: #{country_code}\nSuccess: #{success}"
     end
   end
   
