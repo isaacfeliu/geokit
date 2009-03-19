@@ -35,6 +35,8 @@ module GeoKit
       return YAML.load(cookies[:geo_location]) if cookies[:geo_location]
       location = Geocoders::IpGeocoder.geocode(get_ip_address)
       return location.success ? location : nil
+    rescue
+      nil
     end
     
     # Returns the real ip address, though this could be the localhost ip
