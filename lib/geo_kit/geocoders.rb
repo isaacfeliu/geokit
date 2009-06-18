@@ -332,7 +332,7 @@ module GeoKit
       # The failover approach is crucial for production-grade apps, but is rarely used.
       # 98% of your geocoding calls will be successful with the first call  
       def self.do_geocode(address)
-        res = CACHE.get(address.slugize)
+        res = Rails.cache.read(address.slugize)
         unless res.nil?
           RAILS_DEFAULT_LOGGER.info "==> Got #{address.slugize} from cache"
           return res 
@@ -342,7 +342,7 @@ module GeoKit
             klass = GeoKit::Geocoders.const_get "#{provider.to_s.capitalize}Geocoder"
             res = klass.send :geocode, address
             if res.success
-              CACHE.set(address.slugize, res)
+              Rails.cache.write(address.slugize, res)
               RAILS_DEFAULT_LOGGER.info "<== Set #{address.slugize} from cache"
               return res
             end
